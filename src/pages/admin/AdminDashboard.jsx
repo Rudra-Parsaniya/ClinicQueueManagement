@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "../../components/LoadingSpinner.jsx";
 import { getClinic } from "../../api/admin";
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, icon }) {
   return (
-    <div className="cms-card p-4">
-      <div className="text-xs font-medium text-gray-500">{label}</div>
-      <div className="mt-1 text-xl font-semibold text-gray-900">{value}</div>
+    <div className="cms-card p-5 hover:border-emerald-100 group">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{label}</span>
+        {icon && <div className="p-2 rounded-lg bg-slate-50 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-colors uppercase font-bold text-[10px]">{icon}</div>}
+      </div>
+      <div className="text-2xl font-bold text-slate-900">{value}</div>
     </div>
   );
 }
@@ -39,53 +42,58 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div className="cms-card p-6">
-        <h1 className="text-lg font-semibold text-gray-900">Admin Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Clinic overview and user management.
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">System Overview</h1>
+        <p className="text-sm text-slate-500">
+          Manage clinic settings, user roles, and monitor system-wide activity.
         </p>
       </div>
 
-      <div className="cms-card p-6">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-sm font-semibold text-gray-900">Clinic</h2>
-          {loading && <LoadingSpinner label="Loading clinic..." />}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900">Clinic Information</h2>
+          {loading && <LoadingSpinner label="Refreshing..." />}
         </div>
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+          <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-600">
             {error}
           </div>
         )}
 
         {!loading && !error && clinic && (
-          <div className="mt-4 space-y-4">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <StatCard label="Clinic Name" value={clinic.name || "—"} />
-              <StatCard label="Clinic Code" value={clinic.code || "—"} />
-              <StatCard label="Clinic ID" value={clinic.id || "—"} />
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <StatCard label="Clinic Name" value={clinic.name || "—"} icon="Name" />
+              <StatCard label="Public Code" value={clinic.code || "—"} icon="Code" />
+              <StatCard label="System ID" value={clinic.id || "—"} icon="ID" />
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
               <StatCard
-                label="Users"
-                value={clinic.userCount ?? "—"}
+                label="Registered Users"
+                value={clinic.userCount ?? "0"}
+                icon="Users"
               />
               <StatCard
-                label="Appointments"
-                value={clinic.appointmentCount ?? "—"}
+                label="Total Appointments"
+                value={clinic.appointmentCount ?? "0"}
+                icon="Calendar"
               />
               <StatCard
-                label="Queue Entries"
-                value={clinic.queueCount ?? "—"}
+                label="Active Queue"
+                value={clinic.queueCount ?? "0"}
+                icon="Queue"
               />
             </div>
           </div>
         )}
 
         {!loading && !error && !clinic && (
-          <p className="mt-3 text-sm text-gray-500">No clinic data found.</p>
+          <div className="cms-card p-12 text-center">
+             <p className="text-sm font-medium text-slate-500 italic">No clinic data available within the current scope.</p>
+          </div>
         )}
       </div>
     </div>

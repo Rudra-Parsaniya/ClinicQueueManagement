@@ -55,34 +55,44 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="cms-card w-full max-w-md px-6 py-6">
-        <h1 className="text-lg font-semibold text-gray-900">
-          Clinic Queue Management
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Sign in to access your dashboard.
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-100/50 rounded-full blur-3xl" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl" />
+      
+      <div className="cms-card w-full max-w-md p-8 relative z-10 backdrop-blur-sm bg-white/90">
+        <div className="text-center mb-10">
+          <div className="mx-auto h-12 w-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-lg font-bold shadow-lg shadow-emerald-500/20 mb-4">
+            CMS
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Welcome Back
+          </h1>
+          <p className="mt-2 text-sm text-slate-500">
+            Sign in to the Clinic Queue Management System
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div className="space-y-1">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
             <label className="cms-label" htmlFor="email">
-              Email
+              Email Address
             </label>
             <input
               id="email"
               type="email"
               className="cms-input"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
             />
             {errors.email && (
-              <p className="text-xs text-red-600">{errors.email}</p>
+              <p className="mt-1.5 text-xs font-semibold text-red-500">{errors.email}</p>
             )}
           </div>
 
-          <div className="space-y-1">
+          <div>
             <label className="cms-label" htmlFor="password">
               Password
             </label>
@@ -90,29 +100,34 @@ export default function LoginPage() {
               id="password"
               type="password"
               className="cms-input"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
             {errors.password && (
-              <p className="text-xs text-red-600">{errors.password}</p>
+              <p className="mt-1.5 text-xs font-semibold text-red-500">{errors.password}</p>
             )}
           </div>
 
           {submitError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+            <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-semibold text-red-600 animate-in fade-in duration-300">
               {submitError}
             </div>
           )}
 
           <button
             type="submit"
-            className="cms-btn w-full justify-center"
+            className="cms-btn w-full py-3"
             disabled={submitting}
           >
-            {submitting ? <LoadingSpinner label="Signing in..." /> : "Sign in"}
+            {submitting ? <LoadingSpinner label="Authenticating..." /> : "Sign in to Dashboard"}
           </button>
         </form>
+
+        <div className="mt-8 text-center text-xs text-slate-400">
+          Secure Access for Authorized Personnel Only
+        </div>
       </div>
     </div>
   );

@@ -45,11 +45,11 @@ function DoctorDashboard() {
 
 function AppLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-slate-50">
       <Navbar />
-      <div className="mx-auto flex w-full max-w-6xl flex-1 gap-6 px-4 py-6">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 gap-8 px-6 py-8">
         <Sidebar />
-        <main className="flex-1 space-y-4">
+        <main className="flex-1 min-w-0 space-y-6">
           <Routes>
             <Route
               path="/admin"

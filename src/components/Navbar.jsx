@@ -4,39 +4,44 @@ export default function Navbar() {
   const { user, logout } = useAuth();
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="h-9 w-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-sm font-semibold">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="flex items-center gap-4">
+          <div className="h-10 w-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-lg shadow-emerald-500/20">
             CMS
           </div>
-          <div>
-            <div className="text-sm font-semibold text-gray-900">
+          <div className="flex flex-col">
+            <h1 className="text-base font-bold tracking-tight text-slate-900">
               {user?.clinicName || "Clinic Management System"}
-            </div>
-            <div className="text-xs text-gray-500">
-              {user?.clinicCode ? `Code: ${user.clinicCode}` : "Queue Management"}
-            </div>
+            </h1>
+            <span className="text-xs font-medium text-slate-500">
+              {user?.clinicCode ? `System Access: ${user.clinicCode}` : "Queue Management"}
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-5">
           {user && (
-            <div className="text-right">
-              <div className="text-sm font-medium text-gray-900">
-                {user.name}
+            <div className="flex items-center gap-3 pr-2 border-r border-slate-100">
+              <div className="text-right">
+                <div className="text-sm font-bold text-slate-900 leading-tight">
+                  {user.name}
+                </div>
+                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5">
+                  {user.role}
+                </div>
               </div>
-              <div className="text-xs text-gray-500 uppercase">
-                {user.role}
+              <div className="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200 font-bold overflow-hidden">
+                 {user.name?.charAt(0) || "U"}
               </div>
             </div>
           )}
           <button
             type="button"
             onClick={logout}
-            className="cms-btn-secondary text-xs"
+            className="cms-btn-secondary !py-2 !px-4 text-xs !rounded-lg"
           >
-            Logout
+            Sign Out
           </button>
         </div>
       </div>

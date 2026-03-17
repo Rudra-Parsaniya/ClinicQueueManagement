@@ -69,67 +69,74 @@ export default function QueuePage() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="cms-card p-6">
-        <h1 className="text-lg font-semibold text-gray-900">Daily Queue</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Select a date to view and manage the queue.
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Clinic Traffic Manager</h1>
+        <p className="text-sm text-slate-500">
+          Monitor and direct the flow of patients throughout the clinic for any selected date.
         </p>
+      </div>
 
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-1">
+      <div className="cms-card p-8">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-end justify-between">
+          <div className="flex-1 max-w-sm">
             <label className="cms-label" htmlFor="queueDate">
-              Date
+              Operational Date
             </label>
-            <input
-              id="queueDate"
-              type="date"
-              className="cms-input sm:w-56"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
+            <div className="relative">
+               <input
+                id="queueDate"
+                type="date"
+                className="cms-input pr-10"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
           </div>
 
           <button
-            className="cms-btn sm:w-auto"
+            className="cms-btn px-8"
             type="button"
             onClick={() => load(date)}
             disabled={loading}
           >
-            {loading ? <LoadingSpinner label="Loading..." /> : "Load Queue"}
+            {loading ? <LoadingSpinner label="Synchronizing..." /> : "Refresh View"}
           </button>
         </div>
       </div>
 
       <div className="cms-card overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="text-sm font-semibold text-gray-900">Queue</div>
-          {loading && <LoadingSpinner label="Loading queue..." />}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+           <div className="flex items-center gap-2">
+            <div className="h-5 w-1 bg-emerald-500 rounded-full" />
+            <span className="text-sm font-bold text-slate-900 leading-none">Management Queue</span>
+          </div>
+          {loading && <LoadingSpinner label="Updating..." />}
         </div>
 
         {error && (
-          <div className="px-6 pb-4">
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+          <div className="m-6">
+            <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-600">
               {error}
             </div>
           </div>
         )}
 
         <div className="overflow-x-auto">
-          <table className="min-w-full border-t border-gray-200 text-left text-sm">
-            <thead className="bg-white">
-              <tr className="text-xs font-semibold uppercase tracking-wide text-gray-700">
-                <th className="px-6 py-3">Token</th>
-                <th className="px-6 py-3">Patient</th>
-                <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3">Actions</th>
+          <table className="min-w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                <th className="px-6 py-4">Position #</th>
+                <th className="px-6 py-4">Patient Profile</th>
+                <th className="px-6 py-4">Active Status</th>
+                <th className="px-6 py-4">Management Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-slate-100">
               {!loading && entries.length === 0 && (
                 <tr>
-                  <td className="px-6 py-4 text-gray-500" colSpan={4}>
-                    No queue entries for this date.
+                  <td className="px-6 py-12 text-center text-slate-400 font-medium italic" colSpan={4}>
+                    No clinical activity scheduled for this specific date.
                   </td>
                 </tr>
               )}
@@ -147,41 +154,56 @@ export default function QueuePage() {
                 const options = NEXT_STATUS_OPTIONS[statusKey(status)] || [];
 
                 return (
-                  <tr key={id || `${token}-${idx}`} className="even:bg-gray-50">
-                    <td className="px-6 py-3 font-medium text-gray-900">
-                      {token}
+                  <tr key={id || `${token}-${idx}`} className="group hover:bg-slate-50/80 transition-colors">
+                    <td className="px-6 py-5">
+                      <div className="h-8 w-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs shadow-xs">
+                        {token}
+                      </div>
                     </td>
-                    <td className="px-6 py-3 text-gray-700">{patientName}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-5">
+                       <div className="font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">{patientName}</div>
+                    </td>
+                    <td className="px-6 py-5">
                       <StatusBadge status={status} />
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-5">
                       {options.length === 0 ? (
-                        <span className="text-xs text-gray-400">No actions</span>
+                        <div className="flex items-center gap-2 text-slate-400">
+                           <span className="text-xs font-medium italic">Cycle Complete</span>
+                        </div>
                       ) : (
-                        <div className="flex items-center gap-2">
-                          <select
-                            className="cms-input w-40"
-                            defaultValue=""
-                            disabled={updatingId === id}
-                            onChange={(ev) => {
-                              const val = ev.target.value;
-                              if (!val) return;
-                              onChangeStatus(id, val);
-                              ev.target.value = "";
-                            }}
-                          >
-                            <option value="">Update…</option>
-                            {options.map((opt) => (
-                              <option key={opt} value={opt}>
-                                {opt === "in-progress"
-                                  ? "In Progress"
-                                  : opt.charAt(0).toUpperCase() + opt.slice(1)}
-                              </option>
-                            ))}
-                          </select>
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <select
+                              className="appearance-none bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg block w-36 px-3 py-1.5 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all pr-8"
+                              defaultValue=""
+                              disabled={updatingId === id}
+                              onChange={(ev) => {
+                                const val = ev.target.value;
+                                if (!val) return;
+                                onChangeStatus(id, val);
+                                ev.target.value = "";
+                              }}
+                            >
+                              <option value="">Status Shift…</option>
+                              {options.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt === "in-progress"
+                                    ? "Start Session"
+                                    : opt === "done" 
+                                    ? "Mark Completed" 
+                                    : opt.charAt(0).toUpperCase() + opt.slice(1)}
+                                </option>
+                              ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                              <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                              </svg>
+                            </div>
+                          </div>
                           {updatingId === id && (
-                            <LoadingSpinner label="Updating..." />
+                             <LoadingSpinner />
                           )}
                         </div>
                       )}
